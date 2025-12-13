@@ -23,7 +23,7 @@ const message = ui(
 ## Utils
 
 ```ts
-import { Store } from "disui"
+import { Store } from 'disui';
 
 const User = new Store({
   id: 'snowflake',
@@ -43,4 +43,17 @@ type MyUser = Store.infer<typeof User>;
 
 const myUser = User.deserialize(user);
 // => { id: 214858075650260992n, age: 23, verified: true };
+```
+
+```ts
+import { emoji } from 'disui';
+
+const like = emoji('👍');
+// => { name: '👍', id: null }
+
+const custom = emoji('<:hi:1105603587104591872>');
+// => { id: '1105603587104591872', name: 'hi', animated: false }
+
+const url = custom.url();
+// => 'https://cdn.discordapp.com/emojis/1105603587104591872.png'
 ```
