@@ -2,7 +2,7 @@
 
 A library for building UIs inside of Discord.
 
-## Examples
+## Basic Usage
 
 ```ts
 import { ui, container, text, divider, row, button, emoji } from 'disui';
@@ -19,6 +19,8 @@ const message = ui(
 );
 // => { components: APIMessageComponent[], flags: 32768 }
 ```
+
+## Utils
 
 ```ts
 import { Store } from "disui"
