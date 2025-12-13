@@ -15,6 +15,6 @@ const message = ui(
       button('Click me', 'click-me'),
       button(emoji('👍'), 'like-button').disabled(),
     )
-  ).color('#FFF');
-)
+  ).color('#FFF')
+);
 ```
