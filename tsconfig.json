@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "module": "ESNext",
+    "target": "esnext",
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "moduleResolution": "Bundler",
+    "verbatimModuleSyntax": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "lib": ["esnext", "esnext.asynciterable"],
+    "types": ["node"],
+    "skipLibCheck": true
+  },
+  "include": ["src/"],
+  "exclude": ["node_modules/", "src/__tests__/", "src/vitest.config.ts"]
+}
