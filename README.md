@@ -22,7 +22,7 @@ const message = ui(
 ```ts
 import { Store } from "disui"
 
- const User = new Store({
+const User = new Store({
   id: 'snowflake',
   age: 'number',
   verified: 'boolean',
