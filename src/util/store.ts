@@ -29,7 +29,7 @@ export class Store<T extends Record<string, StoreValue>> {
             buf.writeBigUInt64BE(value);
             return buf.toString('base64url');
           },
-          number: () => Buffer.from(value.toString(), 'utf8').toString('base64url'),
+          number: () => value.toString(),
           string: () => value,
           boolean: () => (value ? '1' : '0'),
         }[type]();
@@ -47,7 +47,7 @@ export class Store<T extends Record<string, StoreValue>> {
           {
             bigint: () => BigInt(item),
             snowflake: () => BigInt(Buffer.from(item, 'base64url').readBigUInt64BE()),
-            number: () => Number(Buffer.from(item, 'base64url').toString('utf8')),
+            number: () => Number(item),
             string: () => item,
             boolean: () => item === '1',
           }[type](),

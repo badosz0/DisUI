@@ -18,3 +18,26 @@ const message = ui(
   ).color('#FFF')
 );
 ```
+
+```ts
+import { Store } from "disui"
+
+ const User = new Store({
+  id: 'snowflake',
+  age: 'number',
+  verified: 'boolean',
+});
+
+const user = User.serialize({
+  id: 214858075650260992n,
+  age: 23,
+  verified: true,
+});
+// => "AvtUSAxCAAA;23;1"
+
+type MyUser = Store.infer<typeof User>;
+// => { id: bigint; age: number; verified: boolean };
+
+const myUser = User.deserialize(user);
+// => { id: 214858075650260992n, age: 23, verified: true };
+```
