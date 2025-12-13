@@ -8,3 +8,14 @@ export function ui(...components: DisUIComponent[]) {
     flags: MessageFlags.IsComponentsV2,
   };
 }
+
+export function ephemeral(message: ReturnType<typeof ui>, condition = true) {
+  if (!condition) {
+    return message;
+  }
+
+  return {
+    ...message,
+    flags: message.flags | MessageFlags.Ephemeral,
+  };
+}
