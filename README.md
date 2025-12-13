@@ -17,6 +17,7 @@ const message = ui(
     )
   ).color('#FFF')
 );
+// => { components: APIMessageComponent[], flags: 32768 }
 ```
 
 ```ts
