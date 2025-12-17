@@ -1,6 +1,6 @@
 {
   "name": "disui",
-  "version": "0.1.8",
+  "version": "0.1.9",
   "description": "A library for building UIs inside of Discord.",
   "license": "MIT",
   "author": "Bartosz Krol <m@badosz.com",
@@ -28,10 +28,12 @@
       "require": "./dist/index.js"
     }
   },
+  "dependencies": {
+    "discord-api-types": "^0.38.37"
+  },
   "devDependencies": {
     "@biomejs/biome": "2.3.4",
     "@types/node": "^25.0.1",
-    "discord-api-types": "^0.38.37",
     "vitest": "^4.0.15",
     "zshy": "^0.4.1"
   }
