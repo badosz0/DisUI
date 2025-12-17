@@ -1,6 +1,25 @@
 import type { APIMessageComponent } from 'discord-api-types/v10';
-import type { DisUIComponent } from '../core/constants';
 import { type ComponentBase, constructComponent, render } from '../internal';
+import type { ButtonComponent } from './button';
+import type { DividerComponent } from './divider';
+import type { FragmentComponent } from './fragment';
+import type { GalleryComponent } from './gallery';
+import type { ImageComponent } from './image';
+import type { RowComponent } from './row';
+import type { SectionComponent } from './section';
+import type { SelectComponent } from './select';
+import type { TextComponent } from './text';
+
+type InContainerComponent =
+  | TextComponent
+  | DividerComponent
+  | RowComponent
+  | GalleryComponent
+  | SectionComponent
+  | ButtonComponent
+  | ImageComponent
+  | SelectComponent
+  | FragmentComponent;
 
 interface ContainerComponent
   extends ComponentBase<
@@ -17,11 +36,7 @@ interface ContainerComponent
   id: (id: string) => this;
 }
 
-export function container(
-  ...components: Array<DisUIComponent<
-    'Text' | 'Divider' | 'Row' | 'MediaGallery' | 'Section' | 'Button' | 'Thumbnail' | 'Select' | 'Fragment'
-  > | null>
-): ContainerComponent {
+export function container(...components: (InContainerComponent | null)[]): ContainerComponent {
   let accentColorVar: number | string | undefined;
   let spoilerVar: boolean | undefined;
   let disabledVar: boolean | undefined;

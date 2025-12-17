@@ -8,7 +8,7 @@ type MultipartFile = {
   key?: string;
 };
 
-interface ImageComponent
+export interface ImageComponent
   extends ComponentBase<
     'Thumbnail',
     {

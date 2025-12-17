@@ -1,14 +1,18 @@
 import type { APIMessageComponent } from 'discord-api-types/v10';
-import type { DisUIComponent } from '../core/constants';
 import { type ComponentBase, constructComponent, render } from '../internal';
+import type { ButtonComponent } from './button';
+import type { FragmentComponent } from './fragment';
+import type { SelectComponent } from './select';
 
-interface RowComponent extends ComponentBase<'Row', { components: APIMessageComponent[] }> {
-  add: (component: DisUIComponent<'Button' | 'Select'>) => this;
+type InRowComponent = ButtonComponent | SelectComponent | FragmentComponent;
+
+export interface RowComponent extends ComponentBase<'Row', { components: APIMessageComponent[] }> {
+  add: (component: InRowComponent) => this;
   disabled: (condition?: boolean) => this;
 }
 
-export function row(...components: DisUIComponent<'Button' | 'Select' | 'Fragment'>[]) {
-  const componentsVar: DisUIComponent[] = components;
+export function row(...components: (InRowComponent | null)[]): RowComponent {
+  const componentsVar: (InRowComponent | null)[] = components;
   let disabledVar: boolean | undefined;
 
   const output = {
@@ -19,7 +23,7 @@ export function row(...components: DisUIComponent<'Button' | 'Select' | 'Fragmen
       }),
     })),
 
-    add: (component: DisUIComponent<'Button' | 'Select'>) => {
+    add: (component: InRowComponent) => {
       componentsVar.push(component);
 
       return output;

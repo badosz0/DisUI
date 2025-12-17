@@ -2,7 +2,7 @@ import { type APIPartialEmoji, ButtonStyle } from 'discord-api-types/v10';
 import { type ComponentBase, constructComponent } from '../internal';
 import { emoji } from '../structures';
 
-interface ButtonComponent
+export interface ButtonComponent
   extends ComponentBase<
     'Button',
     {

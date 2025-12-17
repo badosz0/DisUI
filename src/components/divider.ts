@@ -1,6 +1,6 @@
 import { type ComponentBase, constructComponent } from '../internal';
 
-interface DividerComponent extends ComponentBase<'Divider', { spacing: number; divider: boolean }> {
+export interface DividerComponent extends ComponentBase<'Divider', { spacing: number; divider: boolean }> {
   large: () => this;
   invisible: (condition?: boolean) => this;
 }
