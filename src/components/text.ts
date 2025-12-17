@@ -12,6 +12,10 @@ export interface TextComponent extends ComponentBase<'Text', { content: string }
   strikethrough: (condition?: boolean) => this;
   join: (joiner: string) => this;
   list: (ordered?: boolean) => this;
+  codeblock: (language?: string) => this;
+  size: (size: 'h1' | 'h2' | 'h3' | 'sub' | 'regular') => this;
+  link: (url: string) => this;
+  spoiler: (condition?: boolean) => this;
 }
 
 // biome-ignore lint/suspicious/noExplicitAny: This allows literally anything.
