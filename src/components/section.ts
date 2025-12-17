@@ -8,7 +8,7 @@ export interface SectionComponent
   extends ComponentBase<'Section', { components: APIMessageComponent[]; accessory: APIMessageComponent | null }> {}
 
 export function section(
-  text: TextComponent | TextComponent[],
+  text: TextComponent | (TextComponent | null)[] | null,
   accessory: ImageComponent | ButtonComponent | null,
 ): SectionComponent | TextComponent {
   if (!accessory) {
