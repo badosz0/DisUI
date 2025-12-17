@@ -1,10 +1,17 @@
 import type { APIMessageComponent } from 'discord-api-types/v10';
 import { type DisUIComponent, DisUIComponentType, type DisUIComponentTypeName, DisUISymbol } from '../core/constants';
 
-export function constructComponent<Type extends DisUIComponentTypeName>(
-  type: Type,
-  render: DisUIComponent<Type>[typeof DisUISymbol]['render'],
-): DisUIComponent<Type> {
+export type ComponentBase<T extends DisUIComponentTypeName, D> = {
+  [DisUISymbol]: {
+    type: (typeof DisUIComponentType)[T];
+    render: (options: { stack: DisUIComponentTypeName[]; context: Record<string, unknown> }) => D;
+  };
+};
+
+export function constructComponent<
+  Type extends DisUIComponentTypeName,
+  D extends Record<string, unknown> = Record<string, unknown>,
+>(type: Type, render: DisUIComponent<Type, D>[typeof DisUISymbol]['render']): DisUIComponent<Type, D> {
   const output = {
     [DisUISymbol]: {
       type: DisUIComponentType[type],

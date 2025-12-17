@@ -15,9 +15,12 @@ export const DisUIComponentType = {
 
 export type DisUIComponentTypeName = keyof typeof DisUIComponentType;
 
-export type DisUIComponent<Type extends DisUIComponentTypeName = DisUIComponentTypeName> = {
+export type DisUIComponent<
+  Type extends DisUIComponentTypeName = DisUIComponentTypeName,
+  D extends Record<string, unknown> = Record<string, unknown>,
+> = {
   [DisUISymbol]: {
     type: (typeof DisUIComponentType)[Type];
-    render: (options: { stack: DisUIComponentTypeName[]; context: Record<string, unknown> }) => Record<string, unknown>;
+    render: (options: { stack: DisUIComponentTypeName[]; context: Record<string, unknown> }) => D;
   };
 };

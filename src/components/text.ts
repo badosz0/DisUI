@@ -1,9 +1,21 @@
 import { DisUIComponentType, DisUISymbol } from '../core/constants';
-import { constructComponent } from '../internal';
+import { type ComponentBase, constructComponent } from '../internal';
 import { isDisUIComponent } from '../util';
 
+export interface TextComponent extends ComponentBase<'Text', { content: string }> {
+  toString: () => string;
+  bold: (condition?: boolean) => this;
+  quote: (condition?: boolean) => this;
+  italic: (condition?: boolean) => this;
+  underline: (condition?: boolean) => this;
+  monospace: (spacing?: number, condition?: boolean) => this;
+  strikethrough: (condition?: boolean) => this;
+  join: (joiner: string) => this;
+  list: (ordered?: boolean) => this;
+}
+
 // biome-ignore lint/suspicious/noExplicitAny: This allows literally anything.
-export function text(...content: any[]) {
+export function text(...content: any[]): TextComponent {
   let renderVar: string[] = content.filter(Boolean).map((part) => {
     if (isDisUIComponent(part) && part[DisUISymbol].type === DisUIComponentType.Text) {
       return part[DisUISymbol].render({ stack: [], context: {} }).content;

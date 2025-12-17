@@ -1,11 +1,27 @@
+import type { APIMessageComponent } from 'discord-api-types/v10';
 import type { DisUIComponent } from '../core/constants';
-import { constructComponent, render } from '../internal';
+import { type ComponentBase, constructComponent, render } from '../internal';
+
+interface ContainerComponent
+  extends ComponentBase<
+    'Container',
+    {
+      components: APIMessageComponent[];
+      accent_color: number | string | undefined;
+      spoiler: boolean | undefined;
+    }
+  > {
+  color: (color: number | string | undefined) => this;
+  spoiler: (condition?: boolean) => this;
+  disabled: (condition?: boolean) => this;
+  id: (id: string) => this;
+}
 
 export function container(
   ...components: Array<DisUIComponent<
     'Text' | 'Divider' | 'Row' | 'MediaGallery' | 'Section' | 'Button' | 'Thumbnail' | 'Select' | 'Fragment'
   > | null>
-) {
+): ContainerComponent {
   let accentColorVar: number | string | undefined;
   let spoilerVar: boolean | undefined;
   let disabledVar: boolean | undefined;

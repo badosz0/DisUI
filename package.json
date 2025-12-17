@@ -1,6 +1,6 @@
 {
   "name": "disui",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A library for building UIs inside of Discord.",
   "license": "MIT",
   "author": "Bartosz Krol <m@badosz.com",
@@ -16,7 +16,11 @@
   "files": [
     "dist"
   ],
-  "zshy": "./src/index.ts",
+  "zshy": {
+    "exports": {
+      ".": "./src/index.ts"
+    }
+  },
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",

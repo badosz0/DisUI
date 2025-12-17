@@ -1,5 +1,5 @@
 import { DisUIComponentType } from '../core/constants';
-import { constructComponent } from '../internal';
+import { type ComponentBase, constructComponent } from '../internal';
 
 type MultipartFile = {
   name: string;
@@ -8,7 +8,21 @@ type MultipartFile = {
   key?: string;
 };
 
-export function image(url: string | MultipartFile | { url: string }) {
+interface ImageComponent
+  extends ComponentBase<
+    'Thumbnail',
+    {
+      type: number | undefined;
+      media: { url: string | MultipartFile };
+      description: string | undefined;
+      spoiler: boolean | undefined;
+    }
+  > {
+  alt: (alt: string) => this;
+  spoiler: (condition?: boolean) => this;
+}
+
+export function image(url: string | MultipartFile | { url: string }): ImageComponent {
   let altVar: string | undefined;
   let spoilerVar: boolean | undefined;
 

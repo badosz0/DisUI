@@ -1,8 +1,24 @@
 import { type APIPartialEmoji, ButtonStyle } from 'discord-api-types/v10';
-import { constructComponent } from '../internal';
+import { type ComponentBase, constructComponent } from '../internal';
 import { emoji } from '../structures';
 
-export function button(labelOrEmoji: string | APIPartialEmoji, id: string) {
+interface ButtonComponent
+  extends ComponentBase<
+    'Button',
+    {
+      label: string | undefined;
+      style: ButtonStyle;
+      custom_id: string | undefined;
+      url: string | undefined;
+      disabled: boolean | undefined;
+      emoji: APIPartialEmoji | undefined;
+    }
+  > {
+  disabled: (condition?: boolean) => this;
+  emoji: (input: string | APIPartialEmoji) => this;
+}
+
+export function button(labelOrEmoji: string | APIPartialEmoji, id: string): ButtonComponent {
   let styleVar: ButtonStyle = ButtonStyle.Primary;
   let disabledVar: boolean | undefined;
   let emojiVar: APIPartialEmoji | undefined;
@@ -14,7 +30,7 @@ export function button(labelOrEmoji: string | APIPartialEmoji, id: string) {
         style: styleVar,
         custom_id: styleVar !== ButtonStyle.Link ? `${context.id ? `${context.id}-` : id}` : undefined,
         url: styleVar === ButtonStyle.Link ? id.trim() : undefined,
-        disabled: disabledVar ?? context.disabled,
+        disabled: disabledVar ?? !!context.disabled,
         emoji: typeof labelOrEmoji !== 'string' ? labelOrEmoji : emojiVar,
       };
     }),

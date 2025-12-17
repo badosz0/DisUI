@@ -1,5 +1,11 @@
+import type { APIMessageComponent } from 'discord-api-types/v10';
 import type { DisUIComponent } from '../core/constants';
-import { constructComponent, render } from '../internal';
+import { type ComponentBase, constructComponent, render } from '../internal';
+
+interface RowComponent extends ComponentBase<'Row', { components: APIMessageComponent[] }> {
+  add: (component: DisUIComponent<'Button' | 'Select'>) => this;
+  disabled: (condition?: boolean) => this;
+}
 
 export function row(...components: DisUIComponent<'Button' | 'Select' | 'Fragment'>[]) {
   const componentsVar: DisUIComponent[] = components;
