@@ -16,8 +16,7 @@ export interface RoleSelectComponent
   disabled: (condition?: boolean) => this;
   min: (minValues: number) => this;
   max: (maxValues: number) => this;
-  addDefault: (id: string) => this;
-  setDefaults: (ids: string[]) => this;
+  default: (...ids: string[]) => this;
 }
 
 export function roleSelect(id: string): RoleSelectComponent {
@@ -61,13 +60,7 @@ export function roleSelect(id: string): RoleSelectComponent {
       return output;
     },
 
-    addDefault: (roleId: string) => {
-      defaultValuesVar.push({ id: roleId, type: SelectMenuDefaultValueType.Role });
-
-      return output;
-    },
-
-    setDefaults: (ids: string[]) => {
+    default: (...ids: string[]) => {
       defaultValuesVar = ids.map((roleId) => ({ id: roleId, type: SelectMenuDefaultValueType.Role }));
 
       return output;

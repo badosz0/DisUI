@@ -18,9 +18,7 @@ export interface MentionableSelectComponent
   disabled: (condition?: boolean) => this;
   min: (minValues: number) => this;
   max: (maxValues: number) => this;
-  addDefaultUser: (id: string) => this;
-  addDefaultRole: (id: string) => this;
-  setDefaults: (values: MentionableDefault[]) => this;
+  default: (type: 'user' | 'role', ...ids: string[]) => this;
 }
 
 export function mentionableSelect(id: string): MentionableSelectComponent {
@@ -64,20 +62,11 @@ export function mentionableSelect(id: string): MentionableSelectComponent {
       return output;
     },
 
-    addDefaultUser: (userId: string) => {
-      defaultValuesVar.push({ id: userId, type: SelectMenuDefaultValueType.User });
-
-      return output;
-    },
-
-    addDefaultRole: (roleId: string) => {
-      defaultValuesVar.push({ id: roleId, type: SelectMenuDefaultValueType.Role });
-
-      return output;
-    },
-
-    setDefaults: (values: MentionableDefault[]) => {
-      defaultValuesVar = values;
+    default: (type: 'user' | 'role', ...ids: string[]) => {
+      defaultValuesVar = ids.map((id) => ({
+        id,
+        type: type === 'user' ? SelectMenuDefaultValueType.User : SelectMenuDefaultValueType.Role,
+      }));
 
       return output;
     },

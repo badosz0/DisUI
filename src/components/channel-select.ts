@@ -17,8 +17,7 @@ export interface ChannelSelectComponent
   disabled: (condition?: boolean) => this;
   min: (minValues: number) => this;
   max: (maxValues: number) => this;
-  addDefault: (id: string) => this;
-  setDefaults: (ids: string[]) => this;
+  default: (...ids: string[]) => this;
   types: (types: ChannelType[]) => this;
 }
 
@@ -65,13 +64,7 @@ export function channelSelect(id: string): ChannelSelectComponent {
       return output;
     },
 
-    addDefault: (channelId: string) => {
-      defaultValuesVar.push({ id: channelId, type: SelectMenuDefaultValueType.Channel });
-
-      return output;
-    },
-
-    setDefaults: (ids: string[]) => {
+    default: (...ids: string[]) => {
       defaultValuesVar = ids.map((channelId) => ({ id: channelId, type: SelectMenuDefaultValueType.Channel }));
 
       return output;

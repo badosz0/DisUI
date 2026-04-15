@@ -16,8 +16,7 @@ export interface UserSelectComponent
   disabled: (condition?: boolean) => this;
   min: (minValues: number) => this;
   max: (maxValues: number) => this;
-  addDefault: (id: string) => this;
-  setDefaults: (ids: string[]) => this;
+  default: (...ids: string[]) => this;
 }
 
 export function userSelect(id: string): UserSelectComponent {
@@ -61,13 +60,7 @@ export function userSelect(id: string): UserSelectComponent {
       return output;
     },
 
-    addDefault: (userId: string) => {
-      defaultValuesVar.push({ id: userId, type: SelectMenuDefaultValueType.User });
-
-      return output;
-    },
-
-    setDefaults: (ids: string[]) => {
+    default: (...ids: string[]) => {
       defaultValuesVar = ids.map((userId) => ({ id: userId, type: SelectMenuDefaultValueType.User }));
 
       return output;
