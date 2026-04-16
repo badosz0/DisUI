@@ -31,11 +31,15 @@ export function ui(...components: (DisUIComponent | null)[]): UIComponent {
       return output;
     },
 
-    mentions: (type: 'users' | 'roles' | 'everyone', condition = true) => {
+    mentions: (type: DisUIAllowedMentionType, condition = true) => {
+      const index = mentionsVar.indexOf(type);
+
       if (condition) {
-        mentionsVar.push(type);
-      } else {
-        mentionsVar.splice(mentionsVar.indexOf(type), 1);
+        if (index === -1) {
+          mentionsVar.push(type);
+        }
+      } else if (index !== -1) {
+        mentionsVar.splice(index, 1);
       }
 
       return output;
