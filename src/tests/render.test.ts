@@ -12,9 +12,12 @@ import {
   container,
   divider,
   file,
+  gallery,
+  image,
   mentionableSelect,
   roleSelect,
   row,
+  section,
   select,
   text,
   userSelect,
@@ -37,6 +40,22 @@ function getRowChildren(component: APIMessageComponent) {
   }
 
   return component.components;
+}
+
+function getGalleryItems(component: APIMessageComponent) {
+  if (component.type !== ComponentType.MediaGallery) {
+    throw new Error('Expected a media gallery');
+  }
+
+  return component.items;
+}
+
+function getSectionAccessory(component: APIMessageComponent) {
+  if (component.type !== ComponentType.Section) {
+    throw new Error('Expected a section');
+  }
+
+  return component.accessory;
 }
 
 describe('render', () => {
@@ -165,5 +184,83 @@ describe('render', () => {
       file: { url: 'attachment://example.txt' },
       spoiler: true,
     });
+    expect(resolved.attachments).toEqual([]);
+    expect(resolved.files).toEqual([]);
+  });
+
+  it('collects multipart files and rewrites attachment urls', () => {
+    const reportFile = {
+      name: 'report.txt',
+      data: Buffer.from('report'),
+      contentType: 'text/plain',
+    };
+    const sectionImage = {
+      name: 'thumbnail.png',
+      data: Buffer.from('thumbnail'),
+      contentType: 'image/png',
+    };
+    const galleryImage = {
+      name: 'gallery.png',
+      data: Buffer.from('gallery'),
+      contentType: 'image/png',
+      key: 'files[9]',
+    };
+    const message = ui(
+      container(
+        file(reportFile).spoiler(),
+        section(text('Preview'), image(sectionImage).alt('Section image')),
+        gallery(image(galleryImage).alt('Gallery image').spoiler()),
+      ),
+    );
+
+    const resolved = resolveDisUI(message);
+    const containerChildren = getContainerChildren(resolved.components[0]);
+
+    const multipartFileComponent = containerChildren[0];
+    if (multipartFileComponent.type !== ComponentType.File) {
+      throw new Error('Expected a file component');
+    }
+
+    expect(multipartFileComponent).toMatchObject({
+      file: { url: 'attachment://report.txt' },
+      spoiler: true,
+    });
+
+    const sectionAccessory = getSectionAccessory(containerChildren[1]);
+    if (sectionAccessory.type !== ComponentType.Thumbnail) {
+      throw new Error('Expected a thumbnail accessory');
+    }
+
+    expect(sectionAccessory).toMatchObject({
+      media: { url: 'attachment://thumbnail.png' },
+      description: 'Section image',
+    });
+
+    expect(getGalleryItems(containerChildren[2])).toMatchObject([
+      {
+        media: { url: 'attachment://gallery.png' },
+        description: 'Gallery image',
+        spoiler: true,
+      },
+    ]);
+
+    expect(resolved.attachments).toEqual([
+      { id: 0, filename: 'report.txt' },
+      { id: 1, filename: 'thumbnail.png' },
+      { id: 2, filename: 'gallery.png' },
+    ]);
+    expect(resolved.files).toEqual([
+      {
+        ...reportFile,
+        key: 'files[0]',
+      },
+      {
+        ...sectionImage,
+        key: 'files[1]',
+      },
+      {
+        ...galleryImage,
+      },
+    ]);
   });
 });
