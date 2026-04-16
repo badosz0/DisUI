@@ -1,24 +1,18 @@
+import type { DisUIMultipartFile } from '../core/multipart';
 import { type ComponentBase, constructComponent } from '../internal';
-
-type MultipartFile = {
-  name: string;
-  data: Buffer;
-  contentType?: string;
-  key?: string;
-};
 
 export interface FileComponent
   extends ComponentBase<
     'File',
     {
-      file: { url: string | MultipartFile };
+      file: { url: string | DisUIMultipartFile };
       spoiler: boolean | undefined;
     }
   > {
   spoiler: (condition?: boolean) => this;
 }
 
-export function file(url: string | MultipartFile | { url: string }): FileComponent {
+export function file(url: string | DisUIMultipartFile | { url: string }): FileComponent {
   let spoilerVar: boolean | undefined;
 
   const output = {

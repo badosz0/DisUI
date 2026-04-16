@@ -21,6 +21,31 @@ const resolved = resolveDisUI(message)
 // => { components: APIMessageComponent[], flags: 32768 }
 ```
 
+## Multipart Uploads
+
+```ts
+import { file, image, resolveDisUI, section, text, ui } from 'disui';
+
+const resolved = resolveDisUI(
+  ui(
+    file({
+      name: 'report.txt',
+      data: Buffer.from('hello world'),
+      contentType: 'text/plain',
+    }),
+    section(text('Preview'), image({ name: 'preview.png', data: Buffer.from('...') })),
+  ),
+);
+
+resolved.attachments;
+// => [{ id: 0, filename: 'report.txt' }, { id: 1, filename: 'preview.png' }]
+
+resolved.files;
+// => [{ name: 'report.txt', data: Buffer, key: 'files[0]' }, ...]
+```
+
+`attachments` contains the JSON metadata Discord expects, and `files` contains the multipart uploads to send as `files[n]` form parts.
+
 ## Utils
 
 ```ts

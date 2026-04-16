@@ -1,19 +1,13 @@
 import { DisUIComponentType } from '../core/constants';
+import type { DisUIMultipartFile } from '../core/multipart';
 import { type ComponentBase, constructComponent } from '../internal';
-
-type MultipartFile = {
-  name: string;
-  data: Buffer;
-  contentType?: string;
-  key?: string;
-};
 
 export interface ImageComponent
   extends ComponentBase<
     'Thumbnail',
     {
       type: number | undefined;
-      media: { url: string | MultipartFile };
+      media: { url: string | DisUIMultipartFile };
       description: string | undefined;
       spoiler: boolean | undefined;
     }
@@ -22,7 +16,7 @@ export interface ImageComponent
   spoiler: (condition?: boolean) => this;
 }
 
-export function image(url: string | MultipartFile | { url: string }): ImageComponent {
+export function image(url: string | DisUIMultipartFile | { url: string }): ImageComponent {
   let altVar: string | undefined;
   let spoilerVar: boolean | undefined;
 
