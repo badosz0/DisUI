@@ -69,6 +69,24 @@ describe('render', () => {
     ]);
   });
 
+  it('handles mention toggles idempotently', () => {
+    const noOpDisable = resolveDisUI(ui(text('Hello World')).mentions('roles', false));
+    const duplicateEnable = resolveDisUI(ui(text('Hello World')).mentions('roles', true).mentions('roles', true));
+    const repeatedDisable = resolveDisUI(
+      ui(text('Hello World')).mentions('roles', true).mentions('users', false).mentions('users', false),
+    );
+
+    expect(noOpDisable.allowed_mentions).toEqual({
+      parse: [AllowedMentionsTypes.User],
+    });
+    expect(duplicateEnable.allowed_mentions).toEqual({
+      parse: [AllowedMentionsTypes.User, AllowedMentionsTypes.Role],
+    });
+    expect(repeatedDisable.allowed_mentions).toEqual({
+      parse: [AllowedMentionsTypes.Role],
+    });
+  });
+
   it('prefixes nested custom ids for interactive components', () => {
     const message = ui(
       container(
