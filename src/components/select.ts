@@ -45,7 +45,7 @@ export function select(id: string): SelectComponent {
         min_values: minValuesVar,
         max_values: maxValuesVar ? Math.max(1, Math.min(maxValuesVar, optionsVar.length)) : undefined,
         options,
-        custom_id: `${context.id ? `${context.id}-` : id}`,
+        custom_id: `${context.id ? `${context.id}-` : ''}${id}`,
       };
     }),
 

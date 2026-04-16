@@ -37,7 +37,7 @@ export function channelSelect(id: string): ChannelSelectComponent {
       max_values: maxValuesVar,
       default_values: defaultValuesVar.length > 0 ? defaultValuesVar : undefined,
       channel_types: channelTypesVar,
-      custom_id: `${context.id ? `${context.id}-` : id}`,
+      custom_id: `${context.id ? `${context.id}-` : ''}${id}`,
     })),
 
     placeholder: (placeholder: string) => {

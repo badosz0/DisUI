@@ -28,7 +28,7 @@ export function button(labelOrEmoji: string | APIPartialEmoji, id: string): Butt
       return {
         label: typeof labelOrEmoji === 'string' ? labelOrEmoji : undefined,
         style: styleVar,
-        custom_id: styleVar !== ButtonStyle.Link ? `${context.id ? `${context.id}-` : id}` : undefined,
+        custom_id: styleVar !== ButtonStyle.Link ? `${context.id ? `${context.id}-` : ''}${id}` : undefined,
         url: styleVar === ButtonStyle.Link ? id.trim() : undefined,
         disabled: disabledVar ?? !!context.disabled,
         emoji: typeof labelOrEmoji !== 'string' ? labelOrEmoji : emojiVar,

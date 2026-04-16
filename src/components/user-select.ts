@@ -33,7 +33,7 @@ export function userSelect(id: string): UserSelectComponent {
       min_values: minValuesVar,
       max_values: maxValuesVar,
       default_values: defaultValuesVar.length > 0 ? defaultValuesVar : undefined,
-      custom_id: `${context.id ? `${context.id}-` : id}`,
+      custom_id: `${context.id ? `${context.id}-` : ''}${id}`,
     })),
 
     placeholder: (placeholder: string) => {
