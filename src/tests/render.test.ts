@@ -1,3 +1,4 @@
+/** biome-ignore-all lint/style/noNonNullAssertion: TODO */
 import {
   AllowedMentionsTypes,
   type APIMessageComponent,
@@ -60,7 +61,7 @@ describe('render', () => {
       parse: [AllowedMentionsTypes.Role, AllowedMentionsTypes.Everyone],
     });
 
-    const containerChildren = getContainerChildren(resolved.components[0]);
+    const containerChildren = getContainerChildren(resolved.components![0]);
     const buttonChildren = getRowChildren(containerChildren[2]);
 
     expect(buttonChildren).toMatchObject([
@@ -101,7 +102,7 @@ describe('render', () => {
     );
 
     const resolved = resolveDisUI(message);
-    const containerChildren = getContainerChildren(resolved.components[0]);
+    const containerChildren = getContainerChildren(resolved.components![0]);
 
     expect(containerChildren.map((component) => getRowChildren(component)[0])).toMatchObject([
       { custom_id: 'settings-click-me' },
@@ -133,7 +134,7 @@ describe('render', () => {
     );
 
     const resolved = resolveDisUI(message);
-    const containerChildren = getContainerChildren(resolved.components[0]);
+    const containerChildren = getContainerChildren(resolved.components![0]);
 
     const userSelectComponent = getRowChildren(containerChildren[0])[0];
     if (userSelectComponent.type !== ComponentType.UserSelect) {
@@ -152,7 +153,7 @@ describe('render', () => {
       throw new Error('Expected a role select');
     }
 
-    expect(roleSelectComponent.default_values.map((value) => value.id)).toEqual(['1', '2']);
+    expect(roleSelectComponent.default_values?.map((value) => value.id)).toEqual(['1', '2']);
 
     const mentionableSelectComponent = getRowChildren(containerChildren[2])[0];
     if (mentionableSelectComponent.type !== ComponentType.MentionableSelect) {

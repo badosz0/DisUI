@@ -23,7 +23,7 @@ export interface SelectComponent
     name: string,
     value: string,
     current: boolean,
-    options: Omit<APISelectMenuOption, 'label' | 'value' | 'default'>,
+    options?: Omit<APISelectMenuOption, 'label' | 'value' | 'default'>,
   ) => this;
 }
 

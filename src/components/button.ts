@@ -14,6 +14,7 @@ export interface ButtonComponent
       emoji: APIPartialEmoji | undefined;
     }
   > {
+  style: (style: 'primary' | 'secondary' | 'success' | 'danger' | 'link') => this;
   disabled: (condition?: boolean) => this;
   emoji: (input: string | APIPartialEmoji) => this;
 }

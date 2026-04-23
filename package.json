@@ -12,7 +12,8 @@
   "types": "./dist/index.d.ts",
   "scripts": {
     "test": "vitest run -c ./src/vitest.config.ts",
-    "build": "npx zshy"
+    "build": "npx zshy",
+    "lint": "npx @biomejs/biome check --write --unsafe"
   },
   "files": [
     "dist"
