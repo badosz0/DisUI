@@ -1,11 +1,5 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: TODO */
-import {
-  AllowedMentionsTypes,
-  type APIMessageComponent,
-  ChannelType,
-  ComponentType,
-  MessageFlags,
-} from 'discord-api-types/v10';
+import { AllowedMentionsTypes, ChannelType, ComponentType, MessageFlags } from 'discord-api-types/v10';
 import { describe, expect, it } from 'vitest';
 import {
   button,
@@ -13,6 +7,7 @@ import {
   container,
   divider,
   file,
+  fragment,
   mentionableSelect,
   roleSelect,
   row,
@@ -23,22 +18,7 @@ import {
 import { ui } from '../components/ui';
 import { resolveDisUI } from '../core';
 import { emoji } from '../structures';
-
-function getContainerChildren(component: APIMessageComponent) {
-  if (component.type !== ComponentType.Container) {
-    throw new Error('Expected a container component');
-  }
-
-  return component.components;
-}
-
-function getRowChildren(component: APIMessageComponent) {
-  if (component.type !== ComponentType.ActionRow) {
-    throw new Error('Expected an action row');
-  }
-
-  return component.components;
-}
+import { getContainerChildren, getRowChildren, TEST_IDS, TEST_URLS } from './helpers';
 
 describe('render', () => {
   it('renders ui flags and mentions', () => {
@@ -61,7 +41,7 @@ describe('render', () => {
       parse: [AllowedMentionsTypes.Role, AllowedMentionsTypes.Everyone],
     });
 
-    const containerChildren = getContainerChildren(resolved.components![0]);
+    const containerChildren = getContainerChildren(resolved);
     const buttonChildren = getRowChildren(containerChildren[2]);
 
     expect(buttonChildren).toMatchObject([
@@ -102,7 +82,7 @@ describe('render', () => {
     );
 
     const resolved = resolveDisUI(message);
-    const containerChildren = getContainerChildren(resolved.components![0]);
+    const containerChildren = getContainerChildren(resolved);
 
     expect(containerChildren.map((component) => getRowChildren(component)[0])).toMatchObject([
       { custom_id: 'settings-click-me' },
@@ -123,18 +103,18 @@ describe('render', () => {
       container(
         row(userSelect('pick-user').placeholder('Pick a user').min(1).max(3).default('214858075650260992')),
         row(roleSelect('pick-role').default('1', '2')),
-        row(mentionableSelect('pick-mentionable').placeholder('Pick').default('user', '214858075650260992')),
+        row(mentionableSelect('pick-mentionable').placeholder('Pick').default('user', TEST_IDS.user)),
         row(
           channelSelect('pick-channel')
             .placeholder('Pick a channel')
             .types([ChannelType.GuildText, ChannelType.GuildVoice]),
         ),
-        file('attachment://example.txt').spoiler(),
+        file(TEST_URLS.file).spoiler(),
       ),
     );
 
     const resolved = resolveDisUI(message);
-    const containerChildren = getContainerChildren(resolved.components![0]);
+    const containerChildren = getContainerChildren(resolved);
 
     const userSelectComponent = getRowChildren(containerChildren[0])[0];
     if (userSelectComponent.type !== ComponentType.UserSelect) {
@@ -145,7 +125,7 @@ describe('render', () => {
       placeholder: 'Pick a user',
       min_values: 1,
       max_values: 3,
-      default_values: [{ id: '214858075650260992' }],
+      default_values: [{ id: TEST_IDS.user }],
     });
 
     const roleSelectComponent = getRowChildren(containerChildren[1])[0];
@@ -162,7 +142,7 @@ describe('render', () => {
 
     expect(mentionableSelectComponent).toMatchObject({
       placeholder: 'Pick',
-      default_values: [{ id: '214858075650260992' }],
+      default_values: [{ id: TEST_IDS.user }],
     });
 
     const channelSelectComponent = getRowChildren(containerChildren[3])[0];
@@ -181,8 +161,37 @@ describe('render', () => {
     }
 
     expect(fileComponent).toMatchObject({
-      file: { url: 'attachment://example.txt' },
+      file: { url: TEST_URLS.file },
       spoiler: true,
     });
+  });
+
+  it('resolves non-ui components as top-level payloads', () => {
+    const resolved = resolveDisUI(container(text('Standalone content')));
+    const containerChildren = getContainerChildren(resolved);
+
+    expect(resolved.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(resolved.allowed_mentions).toEqual({
+      parse: [AllowedMentionsTypes.User],
+    });
+    expect(containerChildren).toMatchObject([{ content: 'Standalone content' }]);
+  });
+
+  it('flattens fragments inside containers and rows', () => {
+    const resolved = resolveDisUI(
+      ui(container(fragment(text('First')), row(fragment(button('Primary', 'first'), button('Secondary', 'second'))))),
+    );
+
+    const containerChildren = getContainerChildren(resolved);
+    const buttonChildren = getRowChildren(containerChildren[1]);
+
+    expect(containerChildren[0]).toMatchObject({
+      type: ComponentType.TextDisplay,
+      content: 'First',
+    });
+    expect(buttonChildren.map((button) => ('custom_id' in button ? button.custom_id : undefined))).toEqual([
+      'first',
+      'second',
+    ]);
   });
 });

@@ -18,7 +18,7 @@ export class Store<T extends Record<string, StoreValue>> {
 
   serialize(value: { [K in keyof T]: StoreValueType[T[K]] }) {
     return Object.entries(value)
-      .sort(([a, b]) => Object.keys(this.definition).indexOf(a) - Object.keys(this.definition).indexOf(b))
+      .sort(([a], [b]) => Object.keys(this.definition).indexOf(a) - Object.keys(this.definition).indexOf(b))
       .map(([key, value]) => {
         const type = this.definition[key];
 

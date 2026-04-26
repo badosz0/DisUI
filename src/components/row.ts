@@ -30,7 +30,7 @@ export function row(...components: (InRowComponent | null)[]): RowComponent {
     ...constructComponent('Row', ({ stack, context }) => ({
       components: render(componentsVar.filter(Boolean), [...stack, 'Row'], {
         ...context,
-        disabled: disabledVar,
+        disabled: disabledVar ?? context.disabled,
       }),
     })),
 
