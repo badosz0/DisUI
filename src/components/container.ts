@@ -2,23 +2,24 @@ import type { APIMessageComponent } from 'discord-api-types/v10';
 import { type ComponentBase, constructComponent, render } from '../internal';
 import type { DividerComponent } from './divider';
 import type { FileComponent } from './file';
-import type { FragmentComponent } from './fragment';
+import type { WithFragments } from './fragment';
 import type { GalleryComponent } from './gallery';
 import type { ImageComponent } from './image';
-import type { InRowComponent, RowComponent } from './row';
+import type { InRowComponentBase, RowComponent } from './row';
 import type { SectionComponent } from './section';
 import type { TextComponent } from './text';
 
-type InContainerComponent =
+export type InContainerComponentBase =
   | TextComponent
   | DividerComponent
   | RowComponent
   | GalleryComponent
   | SectionComponent
-  | InRowComponent
+  | InRowComponentBase
   | ImageComponent
-  | FileComponent
-  | FragmentComponent;
+  | FileComponent;
+
+export type InContainerComponent = WithFragments<InContainerComponentBase>;
 
 interface ContainerComponent
   extends ComponentBase<

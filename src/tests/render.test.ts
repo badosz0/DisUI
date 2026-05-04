@@ -179,7 +179,12 @@ describe('render', () => {
 
   it('flattens fragments inside containers and rows', () => {
     const resolved = resolveDisUI(
-      ui(container(fragment(text('First')), row(fragment(button('Primary', 'first'), button('Secondary', 'second'))))),
+      ui(
+        container(
+          fragment(null, text('First')),
+          row(fragment(null, button('Primary', 'first'), fragment(null, button('Secondary', 'second')))),
+        ),
+      ),
     );
 
     const containerChildren = getContainerChildren(resolved);

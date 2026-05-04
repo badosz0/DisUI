@@ -2,20 +2,21 @@ import type { APIMessageComponent } from 'discord-api-types/v10';
 import { type ComponentBase, constructComponent, render } from '../internal';
 import type { ButtonComponent } from './button';
 import type { ChannelSelectComponent } from './channel-select';
-import type { FragmentComponent } from './fragment';
+import type { WithFragments } from './fragment';
 import type { MentionableSelectComponent } from './mentionable-select';
 import type { RoleSelectComponent } from './role-select';
 import type { SelectComponent } from './select';
 import type { UserSelectComponent } from './user-select';
 
-export type InRowComponent =
+export type InRowComponentBase =
   | ButtonComponent
   | SelectComponent
   | UserSelectComponent
   | RoleSelectComponent
   | MentionableSelectComponent
-  | ChannelSelectComponent
-  | FragmentComponent;
+  | ChannelSelectComponent;
+
+export type InRowComponent = WithFragments<InRowComponentBase>;
 
 export interface RowComponent extends ComponentBase<'Row', { components: APIMessageComponent[] }> {
   add: (component: InRowComponent) => this;

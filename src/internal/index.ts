@@ -32,17 +32,17 @@ export function constructComponent<
 }
 
 function render(
-  components: Array<DisUIComponent | null>,
+  components: readonly (DisUIComponent | null)[],
   stack?: DisUIComponentTypeName[],
   context?: Record<string, unknown>,
 ): APIMessageComponent[];
 function render(...components: Array<DisUIComponent | null>): APIMessageComponent[];
 function render(
   ...args:
-    | [Array<DisUIComponent | null>, DisUIComponentTypeName[]?, Record<string, unknown>?]
+    | [readonly (DisUIComponent | null)[], DisUIComponentTypeName[]?, Record<string, unknown>?]
     | Array<DisUIComponent | null>
 ): APIMessageComponent[] {
-  let components: Array<DisUIComponent | null>;
+  let components: readonly (DisUIComponent | null)[];
   let stack: DisUIComponentTypeName[] | undefined;
   let context: Record<string, unknown> | undefined;
 

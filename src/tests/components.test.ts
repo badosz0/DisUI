@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: Test narrowing */
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { describe, expect, it } from 'vitest';
-import { button, container, file, gallery, image, row, section, select, text, ui } from '../components';
+import { button, container, file, fragment, gallery, image, row, section, select, text, ui } from '../components';
 import { resolveDisUI } from '../core';
 import { getContainerChildren, getRowChildren, TEST_IDS, TEST_LABELS, TEST_URLS } from './helpers';
 
@@ -100,12 +100,14 @@ describe('components', () => {
   });
 
   it('renders sections as plain text when no accessory is provided', () => {
-    const resolved = resolveDisUI(container(section([text('Alpha'), null, text('Beta')], null)));
+    const resolved = resolveDisUI(
+      container(section([text('Alpha'), null, fragment(null, text('Beta'), fragment(null, text('Gamma')))], null)),
+    );
     const textComponent = getContainerChildren(resolved)[0];
 
     expect(textComponent).toMatchObject({
       type: ComponentType.TextDisplay,
-      content: 'Alpha\nBeta',
+      content: 'Alpha\nBeta\nGamma',
     });
   });
 
@@ -129,7 +131,17 @@ describe('components', () => {
 
   it('renders gallery images without nested thumbnail type markers', () => {
     const resolved = resolveDisUI(
-      container(gallery(image(TEST_URLS.image), null, image({ url: TEST_URLS.docs }).spoiler())),
+      container(
+        gallery(
+          image(TEST_URLS.image),
+          null,
+          fragment(
+            null,
+            image({ url: TEST_URLS.docs }).spoiler(),
+            fragment(null, image(TEST_URLS.image).alt('Repeated')),
+          ),
+        ),
+      ),
     );
     const galleryComponent = getContainerChildren(resolved)[0];
 
@@ -137,7 +149,7 @@ describe('components', () => {
       throw new Error('Expected a media gallery');
     }
 
-    expect(galleryComponent.items).toHaveLength(2);
+    expect(galleryComponent.items).toHaveLength(3);
     expect(galleryComponent.items[0]).toMatchObject({
       media: { url: TEST_URLS.image },
     });
@@ -145,6 +157,10 @@ describe('components', () => {
     expect(galleryComponent.items[1]).toMatchObject({
       media: { url: TEST_URLS.docs },
       spoiler: true,
+    });
+    expect(galleryComponent.items[2]).toMatchObject({
+      media: { url: TEST_URLS.image },
+      description: 'Repeated',
     });
   });
 
