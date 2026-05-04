@@ -6,8 +6,8 @@ export interface FragmentComponent extends ComponentBase<'Fragment', { component
 
 export function fragment(...components: DisUIComponent[]): FragmentComponent {
   const output = {
-    ...constructComponent('Fragment', ({ context }) => ({
-      components: render(components, [], context),
+    ...constructComponent('Fragment', ({ stack, context }) => ({
+      components: render(components, stack, context),
     })),
   };
 

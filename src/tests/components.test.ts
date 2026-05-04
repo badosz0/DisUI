@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: Test narrowing */
 import { ButtonStyle, ComponentType } from 'discord-api-types/v10';
 import { describe, expect, it } from 'vitest';
-import { button, container, file, gallery, image, row, section, select, text } from '../components';
+import { button, container, file, gallery, image, row, section, select, text, ui } from '../components';
 import { resolveDisUI } from '../core';
 import { getContainerChildren, getRowChildren, TEST_IDS, TEST_LABELS, TEST_URLS } from './helpers';
 
@@ -18,7 +18,7 @@ describe('components', () => {
     const containerChildren = getContainerChildren(resolved);
     const inheritedButton = getRowChildren(containerChildren[0])[0];
     const explicitButton = getRowChildren(containerChildren[1])[0];
-    const inheritedSelect = containerChildren[2];
+    const inheritedSelect = getRowChildren(containerChildren[2])[0];
 
     expect(inheritedButton).toMatchObject({ disabled: true });
     expect(explicitButton).toMatchObject({ disabled: false });
@@ -185,7 +185,8 @@ describe('components', () => {
         .spoiler()
         .id('panel'),
     );
-    const [fileComponent, buttonComponent] = getContainerChildren(resolved);
+    const [fileComponent, buttonRow] = getContainerChildren(resolved);
+    const buttonComponent = getRowChildren(buttonRow)[0];
 
     expect(resolved.components?.[0]).toMatchObject({
       accent_color: 0xa0b1c2,
@@ -198,6 +199,26 @@ describe('components', () => {
     expect(buttonComponent).toMatchObject({
       custom_id: 'panel-launch',
     });
+  });
+
+  it('auto-wraps bare interactive components in rows', () => {
+    const resolved = resolveDisUI(
+      ui(
+        button('Open', 'open'),
+        select('pick-size').addOption('Medium', 'm', false),
+      ),
+    );
+
+    expect(resolved.components).toMatchObject([
+      {
+        type: ComponentType.ActionRow,
+        components: [{ type: ComponentType.Button, custom_id: 'open' }],
+      },
+      {
+        type: ComponentType.ActionRow,
+        components: [{ type: ComponentType.StringSelect, custom_id: 'pick-size' }],
+      },
+    ]);
   });
 
   it('preserves select default value types for downstream Discord payloads', () => {

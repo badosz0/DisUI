@@ -1,6 +1,15 @@
 import type { APIMessageComponent } from 'discord-api-types/v10';
 import { type DisUIComponent, DisUIComponentType, type DisUIComponentTypeName, DisUISymbol } from '../core/constants';
 
+const AUTO_WRAP_WITH_ROW = new Set<number>([
+  DisUIComponentType.Button,
+  DisUIComponentType.Select,
+  DisUIComponentType.UserSelect,
+  DisUIComponentType.RoleSelect,
+  DisUIComponentType.MentionableSelect,
+  DisUIComponentType.ChannelSelect,
+]);
+
 export type ComponentBase<T extends DisUIComponentTypeName, D> = {
   [DisUISymbol]: {
     type: (typeof DisUIComponentType)[T];
@@ -68,10 +77,21 @@ function render(
       continue;
     }
 
-    payload.push({
+    const apiComponent = {
       type: data.type,
       ...r,
-    } as APIMessageComponent);
+    } as APIMessageComponent;
+    const parent = stack.at(-1);
+
+    if (AUTO_WRAP_WITH_ROW.has(data.type) && parent !== 'Row' && parent !== 'Section') {
+      payload.push({
+        type: DisUIComponentType.Row,
+        components: [apiComponent],
+      } as APIMessageComponent);
+      continue;
+    }
+
+    payload.push(apiComponent);
   }
 
   return payload;

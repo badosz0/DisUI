@@ -1,14 +1,12 @@
 import type { APIMessageComponent } from 'discord-api-types/v10';
 import { type ComponentBase, constructComponent, render } from '../internal';
-import type { ButtonComponent } from './button';
 import type { DividerComponent } from './divider';
 import type { FileComponent } from './file';
 import type { FragmentComponent } from './fragment';
 import type { GalleryComponent } from './gallery';
 import type { ImageComponent } from './image';
-import type { RowComponent } from './row';
+import type { InRowComponent, RowComponent } from './row';
 import type { SectionComponent } from './section';
-import type { SelectComponent } from './select';
 import type { TextComponent } from './text';
 
 type InContainerComponent =
@@ -17,9 +15,8 @@ type InContainerComponent =
   | RowComponent
   | GalleryComponent
   | SectionComponent
-  | ButtonComponent
+  | InRowComponent
   | ImageComponent
-  | SelectComponent
   | FileComponent
   | FragmentComponent;
 

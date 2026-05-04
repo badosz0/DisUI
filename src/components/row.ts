@@ -8,7 +8,7 @@ import type { RoleSelectComponent } from './role-select';
 import type { SelectComponent } from './select';
 import type { UserSelectComponent } from './user-select';
 
-type InRowComponent =
+export type InRowComponent =
   | ButtonComponent
   | SelectComponent
   | UserSelectComponent
