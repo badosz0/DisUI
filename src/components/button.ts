@@ -16,7 +16,7 @@ export interface ButtonComponent
   > {
   style: (style: 'primary' | 'secondary' | 'success' | 'danger' | 'link') => this;
   disabled: (condition?: boolean) => this;
-  emoji: (input: string | APIPartialEmoji) => this;
+  emoji: (input: string | APIPartialEmoji | undefined | null) => this;
 }
 
 export function button(labelOrEmoji: string | APIPartialEmoji, id: string): ButtonComponent {
@@ -53,7 +53,11 @@ export function button(labelOrEmoji: string | APIPartialEmoji, id: string): Butt
       return output;
     },
 
-    emoji: (input: string | APIPartialEmoji) => {
+    emoji: (input: string | APIPartialEmoji | undefined | null) => {
+      if (!input) {
+        return output;
+      }
+
       emojiVar = emoji(input);
       return output;
     },
