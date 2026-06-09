@@ -4,6 +4,7 @@ import type { ChannelSelectComponent } from './channel-select';
 import type { CheckboxComponent } from './checkbox';
 import type { CheckboxGroupComponent } from './checkbox-group';
 import type { SingleWithFragments } from './fragment';
+import type { InputComponent } from './input';
 import type { MentionableSelectComponent } from './mentionable-select';
 import type { RadioGroupComponent } from './radio-group';
 import type { RoleSelectComponent } from './role-select';
@@ -16,6 +17,7 @@ export type LabelChildComponentBase =
   | RoleSelectComponent
   | MentionableSelectComponent
   | ChannelSelectComponent
+  | InputComponent
   | RadioGroupComponent
   | CheckboxGroupComponent
   | CheckboxComponent;

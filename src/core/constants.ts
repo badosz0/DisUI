@@ -6,6 +6,7 @@ export const DisUIComponentType = {
   Row: 1,
   Button: 2,
   Select: 3,
+  Input: 4,
   UserSelect: 5,
   RoleSelect: 6,
   MentionableSelect: 7,

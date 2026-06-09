@@ -7,6 +7,7 @@ import {
   fragment,
   gallery,
   image,
+  input,
   label,
   radioGroup,
   row,
@@ -27,6 +28,7 @@ void label('Size', fragment(null, select('size').addOption('Medium', 'm', false)
 void label('Class', radioGroup('class').addOption('Warrior', 'warrior').addOption('Rogue', 'rogue'));
 void label('Days', checkboxGroup('days').addOption('Monday', 'mon'));
 void label('Accepted', checkbox('accepted'));
+void label('Name', input('name').placeholder('Ada Lovelace'));
 
 // @ts-expect-error row fragments should only unwrap to row-compatible components
 void row(fragment(text('Invalid')));
@@ -51,6 +53,9 @@ void label('Invalid text', text('Invalid'));
 
 // @ts-expect-error modal radio groups are not action row children
 void row(radioGroup('invalid'));
+
+// @ts-expect-error modal text inputs are not action row children
+void row(input('invalid'));
 
 // @ts-expect-error labels are modal top-level components, not container children
 void container(label('Invalid', checkbox('invalid')));

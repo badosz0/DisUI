@@ -8,6 +8,7 @@ export * from './file';
 export * from './fragment';
 export * from './gallery';
 export * from './image';
+export * from './input';
 export * from './label';
 export * from './mentionable-select';
 export * from './radio-group';

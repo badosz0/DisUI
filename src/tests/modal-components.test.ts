@@ -1,7 +1,7 @@
 /** biome-ignore-all lint/style/noNonNullAssertion: Test narrowing */
-import { ComponentType } from 'discord-api-types/v10';
+import { ComponentType, TextInputStyle } from 'discord-api-types/v10';
 import { describe, expect, it } from 'vitest';
-import { checkbox, checkboxGroup, label, radioGroup, select } from '../components';
+import { checkbox, checkboxGroup, input, label, radioGroup, select } from '../components';
 import { render } from '../internal';
 
 describe('modal components', () => {
@@ -93,5 +93,38 @@ describe('modal components', () => {
       },
     });
     expect((selectLabel as unknown as { component: { components?: unknown[] } }).component.components).toBeUndefined();
+  });
+
+  it('renders text inputs as label children', () => {
+    const resolved = render(
+      label(
+        'Tell us more',
+        input('bio')
+          .style('paragraph')
+          .placeholder('Write a short bio')
+          .value('Existing text')
+          .min(10)
+          .max(400)
+          .required(false),
+      ).description('This is shown above the input.'),
+    );
+
+    expect(resolved).toMatchObject([
+      {
+        type: ComponentType.Label,
+        label: 'Tell us more',
+        description: 'This is shown above the input.',
+        component: {
+          type: ComponentType.TextInput,
+          custom_id: 'bio',
+          style: TextInputStyle.Paragraph,
+          placeholder: 'Write a short bio',
+          value: 'Existing text',
+          min_length: 10,
+          max_length: 400,
+          required: false,
+        },
+      },
+    ]);
   });
 });
