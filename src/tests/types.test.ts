@@ -1,5 +1,20 @@
 import { describe, expect, it } from 'vitest';
-import { button, container, fragment, gallery, image, row, section, text, ui } from '../components';
+import {
+  button,
+  checkbox,
+  checkboxGroup,
+  container,
+  fragment,
+  gallery,
+  image,
+  label,
+  radioGroup,
+  row,
+  section,
+  select,
+  text,
+  ui,
+} from '../components';
 
 void row(fragment(button('Primary', 'primary'), fragment(button('Secondary', 'secondary'))));
 void row(fragment(null, button('Tertiary', 'tertiary'), fragment(null, button('Quaternary', 'quaternary'))));
@@ -8,6 +23,10 @@ void container(fragment(null, text('Copy'), fragment(null, button('Action 2', 'a
 void gallery(fragment(image('https://example.com/one.png'), fragment(image('https://example.com/two.png'))));
 void gallery(fragment(null, image('https://example.com/three.png')));
 void section(fragment(text('Alpha'), fragment(null, text('Beta'))), fragment(null, button('Open', 'open'), null));
+void label('Size', fragment(null, select('size').addOption('Medium', 'm', false)));
+void label('Class', radioGroup('class').addOption('Warrior', 'warrior').addOption('Rogue', 'rogue'));
+void label('Days', checkboxGroup('days').addOption('Monday', 'mon'));
+void label('Accepted', checkbox('accepted'));
 
 // @ts-expect-error row fragments should only unwrap to row-compatible components
 void row(fragment(text('Invalid')));
@@ -23,6 +42,18 @@ void section(text('Body'), fragment(null, text('Invalid accessory')));
 
 // @ts-expect-error nulls inside fragments should not widen row-compatible children
 void row(fragment(null, text('Still invalid')));
+
+// @ts-expect-error labels can only wrap label-compatible input components
+void label('Invalid action', button('Invalid', 'invalid'));
+
+// @ts-expect-error labels cannot wrap display-only text components
+void label('Invalid text', text('Invalid'));
+
+// @ts-expect-error modal radio groups are not action row children
+void row(radioGroup('invalid'));
+
+// @ts-expect-error labels are modal top-level components, not container children
+void container(label('Invalid', checkbox('invalid')));
 
 describe('types', () => {
   it('keeps fragment-aware child typings compiling', () => {

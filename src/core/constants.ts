@@ -17,6 +17,10 @@ export const DisUIComponentType = {
   File: 13,
   Divider: 14,
   Container: 17,
+  Label: 18,
+  RadioGroup: 21,
+  CheckboxGroup: 22,
+  Checkbox: 23,
 } as const;
 
 export type DisUIComponentTypeName = keyof typeof DisUIComponentType;

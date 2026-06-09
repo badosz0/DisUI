@@ -83,7 +83,7 @@ function render(
     } as APIMessageComponent;
     const parent = stack.at(-1);
 
-    if (AUTO_WRAP_WITH_ROW.has(data.type) && parent !== 'Row' && parent !== 'Section') {
+    if (AUTO_WRAP_WITH_ROW.has(data.type) && parent !== 'Row' && parent !== 'Section' && parent !== 'Label') {
       payload.push({
         type: DisUIComponentType.Row,
         components: [apiComponent],

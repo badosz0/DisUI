@@ -31,7 +31,7 @@
     }
   },
   "dependencies": {
-    "discord-api-types": "^0.38.37"
+    "discord-api-types": "^0.38.48"
   },
   "devDependencies": {
     "@biomejs/biome": "2.3.4",
