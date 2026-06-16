@@ -10,7 +10,7 @@ describe('entity selects', () => {
     const resolved = resolveDisUI(
       container(row(userSelect('users').placeholder('Pick users').min(1).max(2).default(TEST_IDS.user)).disabled()),
     );
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.UserSelect) {
       throw new Error('Expected a user select');
@@ -34,7 +34,7 @@ describe('entity selects', () => {
         ).disabled(),
       ),
     );
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.RoleSelect) {
       throw new Error('Expected a role select');
@@ -56,7 +56,7 @@ describe('entity selects', () => {
         row(mentionableSelect('mentions').placeholder('Pick mentions').min(1).max(4).default('role', TEST_IDS.role)),
       ),
     );
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.MentionableSelect) {
       throw new Error('Expected a mentionable select');
@@ -84,7 +84,7 @@ describe('entity selects', () => {
         ),
       ),
     );
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.ChannelSelect) {
       throw new Error('Expected a channel select');
@@ -112,10 +112,10 @@ describe('entity selects', () => {
         row(channelSelect('channels')),
       ),
     );
-    const [userComponent] = getRowChildren(getContainerChildren(resolved)[0]);
-    const [roleComponent] = getRowChildren(getContainerChildren(resolved)[1]);
-    const [mentionableComponent] = getRowChildren(getContainerChildren(resolved)[2]);
-    const [channelComponent] = getRowChildren(getContainerChildren(resolved)[3]);
+    const [userComponent] = getRowChildren(getContainerChildren(resolved.data)[0]);
+    const [roleComponent] = getRowChildren(getContainerChildren(resolved.data)[1]);
+    const [mentionableComponent] = getRowChildren(getContainerChildren(resolved.data)[2]);
+    const [channelComponent] = getRowChildren(getContainerChildren(resolved.data)[3]);
 
     expect(userComponent.type).toBe(ComponentType.UserSelect);
     expect(roleComponent.type).toBe(ComponentType.RoleSelect);

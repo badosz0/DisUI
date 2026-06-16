@@ -36,12 +36,12 @@ describe('render', () => {
 
     const resolved = resolveDisUI(message);
 
-    expect(resolved.flags).toBe(MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral);
-    expect(resolved.allowed_mentions).toEqual({
+    expect(resolved.data.flags).toBe(MessageFlags.IsComponentsV2 | MessageFlags.Ephemeral);
+    expect(resolved.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.Role, AllowedMentionsTypes.Everyone],
     });
 
-    const containerChildren = getContainerChildren(resolved);
+    const containerChildren = getContainerChildren(resolved.data);
     const buttonChildren = getRowChildren(containerChildren[2]);
 
     expect(buttonChildren).toMatchObject([
@@ -57,13 +57,13 @@ describe('render', () => {
       ui(text('Hello World')).mentions('roles', true).mentions('users', false).mentions('users', false),
     );
 
-    expect(noOpDisable.allowed_mentions).toEqual({
+    expect(noOpDisable.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.User],
     });
-    expect(duplicateEnable.allowed_mentions).toEqual({
+    expect(duplicateEnable.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.User, AllowedMentionsTypes.Role],
     });
-    expect(repeatedDisable.allowed_mentions).toEqual({
+    expect(repeatedDisable.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.Role],
     });
   });
@@ -82,7 +82,7 @@ describe('render', () => {
     );
 
     const resolved = resolveDisUI(message);
-    const containerChildren = getContainerChildren(resolved);
+    const containerChildren = getContainerChildren(resolved.data);
 
     expect(containerChildren.map((component) => getRowChildren(component)[0])).toMatchObject([
       { custom_id: 'settings-click-me' },
@@ -114,7 +114,7 @@ describe('render', () => {
     );
 
     const resolved = resolveDisUI(message);
-    const containerChildren = getContainerChildren(resolved);
+    const containerChildren = getContainerChildren(resolved.data);
 
     const userSelectComponent = getRowChildren(containerChildren[0])[0];
     if (userSelectComponent.type !== ComponentType.UserSelect) {
@@ -168,10 +168,10 @@ describe('render', () => {
 
   it('resolves non-ui components as top-level payloads', () => {
     const resolved = resolveDisUI(container(text('Standalone content')));
-    const containerChildren = getContainerChildren(resolved);
+    const containerChildren = getContainerChildren(resolved.data);
 
-    expect(resolved.flags).toBe(MessageFlags.IsComponentsV2);
-    expect(resolved.allowed_mentions).toEqual({
+    expect(resolved.data.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(resolved.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.User],
     });
     expect(containerChildren).toMatchObject([{ content: 'Standalone content' }]);
@@ -187,7 +187,7 @@ describe('render', () => {
       ),
     );
 
-    const containerChildren = getContainerChildren(resolved);
+    const containerChildren = getContainerChildren(resolved.data);
     const buttonChildren = getRowChildren(containerChildren[1]);
 
     expect(containerChildren[0]).toMatchObject({

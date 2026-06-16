@@ -1,11 +1,5 @@
 import { type ComponentBase, constructComponent } from '../internal';
-
-type MultipartFile = {
-  name: string;
-  data: Buffer;
-  contentType?: string;
-  key?: string;
-};
+import type { MultipartFile } from '../util/multipart';
 
 export interface FileComponent
   extends ComponentBase<
@@ -18,7 +12,7 @@ export interface FileComponent
   spoiler: (condition?: boolean) => this;
 }
 
-export function file(url: string | MultipartFile | { url: string }): FileComponent {
+export function file(url: string | MultipartFile | { url: string | MultipartFile }): FileComponent {
   let spoilerVar: boolean | undefined;
 
   const output = {

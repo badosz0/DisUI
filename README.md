@@ -18,7 +18,34 @@ const message = ui(
   ).color('#FFF')
 );
 const resolved = resolveDisUI(message)
-// => { components: APIMessageComponent[], flags: 32768 }
+// => { data: { components: APIMessageComponent[], flags: 32768 }, files: [] }
+```
+
+## Files
+
+```ts
+import { ui, container, file, image, resolveDisUI } from 'disui';
+
+const avatar = {
+  name: 'avatar.png',
+  data: Buffer.from('...'),
+  contentType: 'image/png',
+};
+
+const manual = {
+  name: 'manual.pdf',
+  data: Buffer.from('...'),
+  contentType: 'application/pdf',
+};
+
+const resolved = resolveDisUI(ui(
+  container(
+    image(avatar),
+    file(manual),
+  ),
+));
+// resolved.data contains attachment://avatar.png and attachment://manual.pdf
+// resolved.files contains [avatar, manual]
 ```
 
 ## Utils

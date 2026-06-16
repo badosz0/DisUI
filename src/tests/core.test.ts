@@ -21,8 +21,8 @@ describe('core', () => {
   it('resolveDisUI keeps default non-ephemeral flags for ui payloads', () => {
     const resolved = resolveDisUI(ui(container(text('Hello'))));
 
-    expect(resolved.flags).toBe(MessageFlags.IsComponentsV2);
-    expect(resolved.allowed_mentions).toEqual({
+    expect(resolved.data.flags).toBe(MessageFlags.IsComponentsV2);
+    expect(resolved.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.User],
     });
   });
@@ -60,7 +60,7 @@ describe('core', () => {
         .id('panel')
         .disabled(),
     );
-    const textComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const textComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     expect(textComponent).toMatchObject({
       type: ComponentType.TextDisplay,
@@ -73,7 +73,7 @@ describe('core', () => {
       container(divider(), divider().large(), divider().invisible(), divider().large().invisible()),
     );
 
-    expect(getContainerChildren(resolved)).toMatchObject([
+    expect(getContainerChildren(resolved.data)).toMatchObject([
       { type: ComponentType.Separator, spacing: 1, divider: true },
       { type: ComponentType.Separator, spacing: 2, divider: true },
       { type: ComponentType.Separator, spacing: 1, divider: false },

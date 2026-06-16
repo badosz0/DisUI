@@ -103,7 +103,7 @@ describe('util', () => {
     );
 
     const visited: ComponentType[] = [];
-    walkComponents(resolved.components!, (component) => {
+    walkComponents(resolved.data.components!, (component) => {
       visited.push(component.type);
     });
 

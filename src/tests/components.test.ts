@@ -15,7 +15,7 @@ describe('components', () => {
       ).disabled(),
     );
 
-    const containerChildren = getContainerChildren(resolved);
+    const containerChildren = getContainerChildren(resolved.data);
     const inheritedButton = getRowChildren(containerChildren[0])[0];
     const explicitButton = getRowChildren(containerChildren[1])[0];
     const inheritedSelect = getRowChildren(containerChildren[2])[0];
@@ -37,7 +37,7 @@ describe('components', () => {
       .placeholder('Pick a size');
 
     const resolved = resolveDisUI(container(row(button('Leading', 'lead')).add(menu)));
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[1];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[1];
 
     if (selectComponent.type !== ComponentType.StringSelect) {
       throw new Error('Expected a string select');
@@ -59,7 +59,7 @@ describe('components', () => {
 
   it('falls back to a disabled empty select when no options are present', () => {
     const resolved = resolveDisUI(container(row(select('empty').placeholder('Unused'))));
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.StringSelect) {
       throw new Error('Expected a string select');
@@ -87,7 +87,7 @@ describe('components', () => {
       ),
     );
 
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.StringSelect) {
       throw new Error('Expected a string select');
@@ -103,7 +103,7 @@ describe('components', () => {
     const resolved = resolveDisUI(
       container(section([text('Alpha'), null, fragment(null, text('Beta'), fragment(null, text('Gamma')))], null)),
     );
-    const textComponent = getContainerChildren(resolved)[0];
+    const textComponent = getContainerChildren(resolved.data)[0];
 
     expect(textComponent).toMatchObject({
       type: ComponentType.TextDisplay,
@@ -115,7 +115,7 @@ describe('components', () => {
     const resolved = resolveDisUI(
       container(section([text('Body copy'), text('Supporting line')], image(TEST_URLS.image).alt('Preview image'))),
     );
-    const sectionComponent = getContainerChildren(resolved)[0];
+    const sectionComponent = getContainerChildren(resolved.data)[0];
 
     if (sectionComponent.type !== ComponentType.Section) {
       throw new Error('Expected a section');
@@ -143,7 +143,7 @@ describe('components', () => {
         ),
       ),
     );
-    const galleryComponent = getContainerChildren(resolved)[0];
+    const galleryComponent = getContainerChildren(resolved.data)[0];
 
     if (galleryComponent.type !== ComponentType.MediaGallery) {
       throw new Error('Expected a media gallery');
@@ -174,7 +174,7 @@ describe('components', () => {
         ),
       ),
     );
-    const [linkButton, emojiButton, onlyEmojiButton] = getRowChildren(getContainerChildren(resolved)[0]);
+    const [linkButton, emojiButton, onlyEmojiButton] = getRowChildren(getContainerChildren(resolved.data)[0]);
 
     expect(linkButton).toMatchObject({
       style: ButtonStyle.Link,
@@ -201,10 +201,10 @@ describe('components', () => {
         .spoiler()
         .id('panel'),
     );
-    const [fileComponent, buttonRow] = getContainerChildren(resolved);
+    const [fileComponent, buttonRow] = getContainerChildren(resolved.data);
     const buttonComponent = getRowChildren(buttonRow)[0];
 
-    expect(resolved.components?.[0]).toMatchObject({
+    expect(resolved.data.components?.[0]).toMatchObject({
       accent_color: 0xa0b1c2,
       spoiler: true,
     });
@@ -217,15 +217,60 @@ describe('components', () => {
     });
   });
 
-  it('auto-wraps bare interactive components in rows', () => {
+  it('collects multipart files and rewrites component attachment urls', () => {
+    const thumbnailFile = {
+      name: 'thumbnail.png',
+      data: Buffer.from('thumbnail'),
+      contentType: 'image/png',
+    };
+    const galleryFile = {
+      name: 'gallery.png',
+      data: Buffer.from('gallery'),
+      contentType: 'image/png',
+    };
+    const attachmentFile = {
+      name: 'manual.pdf',
+      data: Buffer.from('manual'),
+      contentType: 'application/pdf',
+    };
+
     const resolved = resolveDisUI(
-      ui(
-        button('Open', 'open'),
-        select('pick-size').addOption('Medium', 'm', false),
+      container(
+        section(text('Preview'), image(thumbnailFile)),
+        gallery(image({ url: galleryFile })),
+        file(attachmentFile),
       ),
     );
+    const [sectionComponent, galleryComponent, fileComponent] = getContainerChildren(resolved.data);
 
-    expect(resolved.components).toMatchObject([
+    if (sectionComponent.type !== ComponentType.Section) {
+      throw new Error('Expected a section');
+    }
+
+    if (galleryComponent.type !== ComponentType.MediaGallery) {
+      throw new Error('Expected a media gallery');
+    }
+
+    if (fileComponent.type !== ComponentType.File) {
+      throw new Error('Expected a file component');
+    }
+
+    expect(resolved.files).toEqual([thumbnailFile, galleryFile, attachmentFile]);
+    expect(sectionComponent.accessory).toMatchObject({
+      media: { url: 'attachment://thumbnail.png' },
+    });
+    expect(galleryComponent.items[0]).toMatchObject({
+      media: { url: 'attachment://gallery.png' },
+    });
+    expect(fileComponent).toMatchObject({
+      file: { url: 'attachment://manual.pdf' },
+    });
+  });
+
+  it('auto-wraps bare interactive components in rows', () => {
+    const resolved = resolveDisUI(ui(button('Open', 'open'), select('pick-size').addOption('Medium', 'm', false)));
+
+    expect(resolved.data.components).toMatchObject([
       {
         type: ComponentType.ActionRow,
         components: [{ type: ComponentType.Button, custom_id: 'open' }],
@@ -241,7 +286,7 @@ describe('components', () => {
     const resolved = resolveDisUI(
       container(row(select('typed').addOption('One', '1', false).addOption('Two', '2', true))),
     );
-    const selectComponent = getRowChildren(getContainerChildren(resolved)[0])[0];
+    const selectComponent = getRowChildren(getContainerChildren(resolved.data)[0])[0];
 
     if (selectComponent.type !== ComponentType.StringSelect) {
       throw new Error('Expected a string select');

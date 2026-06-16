@@ -10,7 +10,7 @@ describe('text', () => {
     const resolved = resolveDisUI(container(content));
 
     expect(content.toString()).toBe('Alpha | 42 | **Beta**');
-    expect(getContainerChildren(resolved)[0]).toMatchObject({
+    expect(getContainerChildren(resolved.data)[0]).toMatchObject({
       type: ComponentType.TextDisplay,
       content: 'Alpha | 42 | **Beta**',
     });
@@ -21,7 +21,7 @@ describe('text', () => {
       container(text('Payload').bold().italic().underline().strikethrough().spoiler().link('https://example.com')),
     );
 
-    expect(getContainerChildren(resolved)[0]).toMatchObject({
+    expect(getContainerChildren(resolved.data)[0]).toMatchObject({
       content: '[||~~__***Payload***__~~||](https://example.com)',
     });
   });
@@ -31,7 +31,7 @@ describe('text', () => {
     const resolved = resolveDisUI(container(code));
 
     expect(code.toString()).toBe('```ts\n` > 1. first\n2. second `\n```');
-    expect(getContainerChildren(resolved)[0]).toMatchObject({
+    expect(getContainerChildren(resolved.data)[0]).toMatchObject({
       content: '```ts\n` > 1. first\n2. second `\n```',
     });
   });
@@ -39,13 +39,13 @@ describe('text', () => {
   it('supports heading sizes and subtext markers', () => {
     const resolved = resolveDisUI(container(text('Title').size('h1'), text('Subtitle').size('sub')));
 
-    expect(getContainerChildren(resolved)).toMatchObject([{ content: '# Title' }, { content: '-# Subtitle' }]);
+    expect(getContainerChildren(resolved.data)).toMatchObject([{ content: '# Title' }, { content: '-# Subtitle' }]);
   });
 
   it('skips empty heading-only text payloads during rendering', () => {
     const resolved = resolveDisUI(ui(container(text('').size('h1'), text('').size('regular'), text('Visible'))));
 
-    expect(getContainerChildren(resolved)).toMatchObject([{ content: 'Visible' }]);
+    expect(getContainerChildren(resolved.data)).toMatchObject([{ content: 'Visible' }]);
   });
 
   it('honors disabled conditional formatting branches', () => {
@@ -59,7 +59,7 @@ describe('text', () => {
       .quote(false);
 
     expect(content.toString()).toBe('Safe');
-    expect(resolveDisUI(container(content)).components?.[0]).toMatchObject({
+    expect(resolveDisUI(container(content)).data.components?.[0]).toMatchObject({
       type: ComponentType.Container,
     });
   });

@@ -20,4 +20,5 @@ export function walkComponents(components: APIMessageComponent[], callback: (com
   }
 }
 
+export * from './multipart';
 export * from './store';

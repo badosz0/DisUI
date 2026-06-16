@@ -17,7 +17,7 @@ describe('variants', () => {
         ),
       ),
     );
-    const buttons = getRowChildren(getContainerChildren(resolved)[0]);
+    const buttons = getRowChildren(getContainerChildren(resolved.data)[0]);
 
     expect(buttons.map((component) => ('style' in component ? component.style : undefined))).toEqual([
       ButtonStyle.Primary,
@@ -29,7 +29,7 @@ describe('variants', () => {
 
   it('keeps explicit button disabled false under inherited disabled rows', () => {
     const resolved = resolveDisUI(container(row(button('A', 'a'), button('B', 'b').disabled(false)).disabled()));
-    const [inheritedButton, explicitButton] = getRowChildren(getContainerChildren(resolved)[0]);
+    const [inheritedButton, explicitButton] = getRowChildren(getContainerChildren(resolved.data)[0]);
 
     expect(inheritedButton).toMatchObject({ disabled: true });
     expect(explicitButton).toMatchObject({ disabled: false });
@@ -37,7 +37,7 @@ describe('variants', () => {
 
   it('renders image components outside galleries with thumbnail type metadata', () => {
     const resolved = resolveDisUI(container(image(TEST_URLS.image).alt('Standalone').spoiler()));
-    const imageComponent = getContainerChildren(resolved)[0];
+    const imageComponent = getContainerChildren(resolved.data)[0];
 
     expect(imageComponent).toMatchObject({
       type: ComponentType.Thumbnail,
@@ -48,23 +48,18 @@ describe('variants', () => {
   });
 
   it('renders files from multipart-like objects', () => {
-    const resolved = resolveDisUI(
-      container(
-        file({
-          name: 'report.txt',
-          data: Buffer.from('report'),
-        }),
-      ),
-    );
-    const fileComponent = getContainerChildren(resolved)[0];
+    const multipartFile = {
+      name: 'report.txt',
+      data: Buffer.from('report'),
+    };
+    const resolved = resolveDisUI(container(file(multipartFile)));
+    const fileComponent = getContainerChildren(resolved.data)[0];
 
+    expect(resolved.files).toEqual([multipartFile]);
     expect(fileComponent).toMatchObject({
       type: ComponentType.File,
       file: {
-        url: {
-          name: 'report.txt',
-          data: Buffer.from('report'),
-        },
+        url: 'attachment://report.txt',
       },
     });
   });
@@ -72,7 +67,7 @@ describe('variants', () => {
   it('supports numeric container colors without conversion', () => {
     const resolved = resolveDisUI(container(text('Palette')).color(0xabcdef));
 
-    expect(resolved.components?.[0]).toMatchObject({
+    expect(resolved.data.components?.[0]).toMatchObject({
       accent_color: 0xabcdef,
     });
   });
@@ -80,7 +75,7 @@ describe('variants', () => {
   it('retains mention insertion order while removing disabled mentions', () => {
     const resolved = resolveDisUI(ui(text('Hello')).mentions('roles').mentions('everyone').mentions('roles', false));
 
-    expect(resolved.allowed_mentions).toEqual({
+    expect(resolved.data.allowed_mentions).toEqual({
       parse: [AllowedMentionsTypes.User, AllowedMentionsTypes.Everyone],
     });
   });
@@ -88,7 +83,7 @@ describe('variants', () => {
   it('renders fragments directly at the top level through resolveDisUI', () => {
     const resolved = resolveDisUI(fragment(text('One'), text('Two')));
 
-    expect(resolved.components).toMatchObject([
+    expect(resolved.data.components).toMatchObject([
       { type: ComponentType.TextDisplay, content: 'One' },
       { type: ComponentType.TextDisplay, content: 'Two' },
     ]);
@@ -99,7 +94,7 @@ describe('variants', () => {
     const resolved = resolveDisUI(container(content));
 
     expect(content.toString()).toBe('OneTwoThree');
-    expect(getContainerChildren(resolved)[0]).toMatchObject({
+    expect(getContainerChildren(resolved.data)[0]).toMatchObject({
       content: 'One\nTwo\nThree',
     });
   });

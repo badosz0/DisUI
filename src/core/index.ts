@@ -6,9 +6,15 @@ import {
 } from 'discord-api-types/v10';
 import type { DisUIAllowedMentionType } from '../components/ui';
 import { render } from '../internal';
+import { type MultipartFile, resolveMultipartFiles } from '../util/multipart';
 import { type DisUIComponent, DisUIComponentType, DisUISymbol } from './constants';
 
-export function resolveDisUI(component: DisUIComponent): APIInteractionResponseCallbackData {
+export type ResolvedDisUI = {
+  data: APIInteractionResponseCallbackData;
+  files: MultipartFile[];
+};
+
+export function resolveDisUI(component: DisUIComponent): ResolvedDisUI {
   const rendered = component[DisUISymbol].render({ stack: [], context: {} });
 
   let flags = MessageFlags.IsComponentsV2;
@@ -32,16 +38,23 @@ export function resolveDisUI(component: DisUIComponent): APIInteractionResponseC
     }
   }
 
+  const components =
+    component[DisUISymbol].type === DisUIComponentType.UI
+      ? (rendered.components as APIMessageTopLevelComponent[])
+      : (render(component) as APIMessageTopLevelComponent[]);
+
+  const files = resolveMultipartFiles(components);
+
   return {
-    components:
-      component[DisUISymbol].type === DisUIComponentType.UI
-        ? (rendered.components as APIMessageTopLevelComponent[])
-        : (render(component) as APIMessageTopLevelComponent[]),
-    flags,
-    attachments: [],
-    allowed_mentions: {
-      parse: allowedMentions,
+    data: {
+      components,
+      flags,
+      attachments: [],
+      allowed_mentions: {
+        parse: allowedMentions,
+      },
     },
+    files,
   };
 }
 
