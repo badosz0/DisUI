@@ -59,3 +59,4 @@ export function resolveDisUI(component: DisUIComponent): ResolvedDisUI {
 }
 
 export * from './constants';
+export * from './embed';

@@ -48,6 +48,30 @@ const resolved = resolveDisUI(ui(
 // resolved.files contains [avatar, manual]
 ```
 
+## Website Link Previews
+
+Generate a [Discord link preview](https://github.com/discord/discord-api-docs/pull/8606)
+and insert the returned tag into your server-rendered `<head>`.
+
+```ts
+import { container, text, row, button, renderDisUIEmbed, resolveDisUIEmbed } from 'disui';
+
+const preview = container(
+  text('New release').size('h2'),
+  text('Build Discord interfaces with DisUI.'),
+  row(button('Read more', 'https://example.com/releases').style('link')),
+).color(0x5865f2);
+
+const embedTag = renderDisUIEmbed(preview);
+// <script id="discord:component-embed" type="application/json">{"component":{...}}</script>
+
+const resolved = resolveDisUIEmbed(preview);
+// => { component: { type: 17, ... } } (for linked JSON previews)
+```
+
+Use one container, `.style('link')` for buttons, and HTTP(S) URLs for media.
+Invalid components and payloads exceeding Discord's limits throw an error.
+
 ## Utils
 
 ```ts
