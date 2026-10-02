@@ -8,8 +8,7 @@ type NullableDisUIComponent = DisUIComponent | null;
 
 export interface FragmentComponent<
   Children extends readonly NullableDisUIComponent[] = readonly NullableDisUIComponent[],
->
-  extends ComponentBase<'Fragment', { components: APIMessageComponent[] }> {
+> extends ComponentBase<'Fragment', { components: APIMessageComponent[] }> {
   readonly [FragmentChildrenSymbol]?: Children;
 }
 
