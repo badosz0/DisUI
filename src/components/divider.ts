@@ -1,7 +1,7 @@
 import { type ComponentBase, constructComponent } from '../internal';
 
 export interface DividerComponent extends ComponentBase<'Divider', { spacing: number; divider: boolean }> {
-  large: () => this;
+  large: (condition?: boolean) => this;
   invisible: (condition?: boolean) => this;
 }
 
@@ -15,8 +15,8 @@ export function divider(): DividerComponent {
       divider: !invisibleVar,
     })),
 
-    large: () => {
-      largeVar = true;
+    large: (condition = true) => {
+      largeVar = condition;
 
       return output;
     },

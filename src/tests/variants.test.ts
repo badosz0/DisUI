@@ -89,11 +89,12 @@ describe('variants', () => {
     ]);
   });
 
-  it('uses newline joins for plain text rendering and no separator for toString', () => {
+  it('uses newline joins for both plain text rendering and toString', () => {
     const content = text('One', 'Two', 'Three');
     const resolved = resolveDisUI(container(content));
 
-    expect(content.toString()).toBe('OneTwoThree');
+    expect(content.toString()).toBe('One\nTwo\nThree');
+    expect(String(content)).toBe('One\nTwo\nThree');
     expect(getContainerChildren(resolved.data)[0]).toMatchObject({
       content: 'One\nTwo\nThree',
     });

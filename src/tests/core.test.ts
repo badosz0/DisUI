@@ -70,14 +70,25 @@ describe('core', () => {
 
   it('divider variants update spacing and visibility flags', () => {
     const resolved = resolveDisUI(
-      container(divider(), divider().large(), divider().invisible(), divider().large().invisible()),
+      container(
+        divider(),
+        divider().large(),
+        divider().large(true),
+        divider().large(false),
+        divider().invisible(),
+        divider().large().invisible(),
+        divider().large().large(false).invisible(),
+      ),
     );
 
     expect(getContainerChildren(resolved.data)).toMatchObject([
       { type: ComponentType.Separator, spacing: 1, divider: true },
       { type: ComponentType.Separator, spacing: 2, divider: true },
+      { type: ComponentType.Separator, spacing: 2, divider: true },
+      { type: ComponentType.Separator, spacing: 1, divider: true },
       { type: ComponentType.Separator, spacing: 1, divider: false },
       { type: ComponentType.Separator, spacing: 2, divider: false },
+      { type: ComponentType.Separator, spacing: 1, divider: false },
     ]);
   });
 });

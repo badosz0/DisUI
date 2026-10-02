@@ -20,20 +20,23 @@ export interface TextComponent extends ComponentBase<'Text', { content: string }
 
 // biome-ignore lint/suspicious/noExplicitAny: This allows literally anything.
 export function text(...content: any[]): TextComponent {
-  let renderVar: string[] = content.filter(Boolean).map((part) => {
-    if (isDisUIComponent(part) && part[DisUISymbol].type === DisUIComponentType.Text) {
-      return part[DisUISymbol].render({ stack: [], context: {} }).content;
-    }
+  let renderVar: string[] = content
+    .filter(Boolean)
+    .map((part) => {
+      if (isDisUIComponent(part) && part[DisUISymbol].type === DisUIComponentType.Text) {
+        return part[DisUISymbol].render({ stack: [], context: {} }).content;
+      }
 
-    return part.toString();
-  });
+      return part.toString();
+    })
+    .filter(Boolean);
 
   const output = {
     ...constructComponent('Text', () => ({
       content: renderVar.join('\n'),
     })),
 
-    toString: () => renderVar.join(''),
+    toString: () => renderVar.join('\n'),
 
     bold: (condition = true) => {
       if (condition) {

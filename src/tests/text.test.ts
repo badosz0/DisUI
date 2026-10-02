@@ -16,6 +16,21 @@ describe('text', () => {
     });
   });
 
+  it('skips empty nested text components without adding blank lines', () => {
+    const content = text(
+      text('').size('sub'),
+      text('1. example').bold(),
+      text(''),
+      text('Target: value').size('sub'),
+      text(text('')),
+    );
+
+    expect(content.toString()).toBe('**1. example**\n-# Target: value');
+    expect(getContainerChildren(resolveDisUI(container(content)).data)[0]).toMatchObject({
+      content: '**1. example**\n-# Target: value',
+    });
+  });
+
   it('applies inline formatting transforms in sequence', () => {
     const resolved = resolveDisUI(
       container(text('Payload').bold().italic().underline().strikethrough().spoiler().link('https://example.com')),
