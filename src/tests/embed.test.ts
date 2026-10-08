@@ -16,7 +16,7 @@ import {
   text,
   ui,
 } from '../components';
-import { renderDisUIEmbed, resolveDisUI, resolveDisUIEmbed } from '../core';
+import { renderDisUIEmbed, renderDisUIEmbedJSON, resolveDisUI, resolveDisUIEmbed } from '../core';
 import { constructComponent } from '../internal';
 
 function scriptJSON(html: string) {
@@ -51,6 +51,38 @@ describe('component embeds', () => {
   it('accepts a container directly or inside a fragment', () => {
     const component = container(text('Preview'));
     expect(resolveDisUIEmbed(fragment(null, component))).toEqual(resolveDisUIEmbed(component));
+  });
+
+  it('returns JSON without a script wrapper for framework-rendered script elements', () => {
+    const preview = container(
+      gallery(image('https://dankmemer.lol/img/discord-og.png')),
+      section(
+        text('# Dank Memer', 'Make your Discord server a place to play.'),
+        image('https://dankmemer.lol/img/memer.webp'),
+      ),
+      divider(),
+      row(
+        button('Invite', 'https://invite.dankmemer.lol').style('link'),
+        button('Support', 'https://discord.gg/dankmemerbot').style('link'),
+        button('Store', 'https://dankmemer.lol/store').style('link'),
+      ),
+    ).color('#618C56');
+
+    const json = renderDisUIEmbedJSON(preview);
+    expect(JSON.parse(json)).toMatchObject({
+      component: {
+        type: ComponentType.Container,
+        accent_color: 0x618c56,
+        components: [
+          { type: ComponentType.MediaGallery },
+          { type: ComponentType.Section },
+          { type: ComponentType.Separator },
+          { type: ComponentType.ActionRow },
+        ],
+      },
+    });
+    expect(json).toBe(scriptJSON(renderDisUIEmbed(preview)));
+    expect(() => renderDisUIEmbedJSON(text('Missing container'))).toThrow('exactly one top-level container');
   });
 
   it('requires exactly one top-level container', () => {
@@ -132,6 +164,7 @@ describe('component embeds', () => {
   it('measures the 3000-byte limit in UTF-8 and accepts the exact boundary', () => {
     const overhead = Buffer.byteLength(JSON.stringify(resolveDisUIEmbed(container(text('x'))))) - 1;
     const exact = container(text('x'.repeat(3_000 - overhead)));
+    expect(Buffer.byteLength(renderDisUIEmbedJSON(exact))).toBe(3_000);
     expect(Buffer.byteLength(scriptJSON(renderDisUIEmbed(exact)))).toBe(3_000);
     expect(() => resolveDisUIEmbed(container(text('x'.repeat(3_001 - overhead))))).toThrow('3000 bytes');
     expect(() => resolveDisUIEmbed(container(text('🙂'.repeat(750))))).toThrow('3000 bytes');
@@ -139,15 +172,19 @@ describe('component embeds', () => {
 
   it('escapes HTML-sensitive content without changing the parsed JSON', () => {
     const content = '</ScRiPt><script>alert("injection")</script><!--<script> & \u2028\u2029';
-    const html = renderDisUIEmbed(container(text(content)));
-    expect(scriptJSON(html)).not.toMatch(/[<>&\u2028\u2029]/);
-    expect(JSON.parse(scriptJSON(html)).component.components[0].content).toBe(content);
+    const preview = container(text(content));
+    const json = renderDisUIEmbedJSON(preview);
+    const html = renderDisUIEmbed(preview);
+    expect(json).not.toMatch(/[<>&\u2028\u2029]/);
+    expect(JSON.parse(json).component.components[0].content).toBe(content);
+    expect(scriptJSON(html)).toBe(json);
     expect(html.match(/<script/g)).toHaveLength(1);
   });
 
   it('checks inline payload size after HTML escaping', () => {
     const component = container(text('<'.repeat(500)));
     expect(() => resolveDisUIEmbed(component)).not.toThrow();
+    expect(() => renderDisUIEmbedJSON(component)).toThrow('3000 bytes');
     expect(() => renderDisUIEmbed(component)).toThrow('3000 bytes');
   });
 });

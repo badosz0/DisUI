@@ -141,9 +141,14 @@ export function resolveDisUIEmbed(component: DisUIComponent): DisUIEmbed {
   return payload;
 }
 
-/** Render a component embed as a script tag ready for server-rendered HTML. */
-export function renderDisUIEmbed(component: DisUIComponent): string {
+/** Render HTML-safe component-embed JSON for a script element's contents. */
+export function renderDisUIEmbedJSON(component: DisUIComponent): string {
   const json = JSON.stringify(resolveDisUIEmbed(component)).replace(/[<>&\u2028\u2029]/g, (char) => HTML_ESCAPES[char]);
   checkPayloadSize(json);
-  return `<script id="discord:component-embed" type="application/json">${json}</script>`;
+  return json;
+}
+
+/** Render a component embed as a script tag ready for server-rendered HTML. */
+export function renderDisUIEmbed(component: DisUIComponent): string {
+  return `<script id="discord:component-embed" type="application/json">${renderDisUIEmbedJSON(component)}</script>`;
 }

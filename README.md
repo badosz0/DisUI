@@ -69,6 +69,19 @@ const resolved = resolveDisUIEmbed(preview);
 // => { component: { type: 17, ... } } (for linked JSON previews)
 ```
 
+For React, use `renderDisUIEmbedJSON()` for the script contents:
+
+```tsx
+import { renderDisUIEmbedJSON } from 'disui';
+
+export function DiscordLinkPreview() {
+  const json = renderDisUIEmbedJSON(preview);
+  return (
+    <script id="discord:component-embed" type="application/json" dangerouslySetInnerHTML={{ __html: json }} />
+  );
+}
+```
+
 Use one container, `.style('link')` for buttons, and HTTP(S) URLs for media.
 Invalid components and payloads exceeding Discord's limits throw an error.
 
